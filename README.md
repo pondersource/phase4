@@ -1,3 +1,6 @@
+##This fork is only used for testing a bunch of stuff, do not actually use this!
+It has a bunch of certificate checks removed to facilitate running the server without getting any to test out some Peppol and AS4 stuff...
+
 # phase4 - AS4 client and server
 
 ![Logo](https://github.com/phax/phase4/blob/master/docs/logo/phase4-logo-653-180.png)
