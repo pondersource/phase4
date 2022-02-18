@@ -1,3 +1,9 @@
+# DO NOT USE IN PRODUCTION
+## This is just to test our php implementation of peppol
+
+It does not check the validity of the certificates and comes with "hardcoded" keys.
+If you wish to implement AS4 or peppol, feel free to use this for testing
+
 # phase4 - AS4 client and server
 
 ![Logo](https://github.com/phax/phase4/blob/master/docs/logo/phase4-logo-653-180.png)

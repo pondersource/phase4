@@ -18,3 +18,5 @@ phase4-data/
 phase4-dumps/
 phase4-test-data/
 incoming/
+
+!phase4-peppol-server-webapp/src/test/resources/keys/test.p12
