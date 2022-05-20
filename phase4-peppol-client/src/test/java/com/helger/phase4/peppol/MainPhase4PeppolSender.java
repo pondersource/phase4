@@ -68,7 +68,7 @@ public final class MainPhase4PeppolSender
         throw new IllegalStateException ("Failed to read XML file to be send");
 
       // Start configuring here
-      IParticipantIdentifier aReceiverID = Phase4PeppolSender.IF.createParticipantIdentifierWithDefaultScheme ("9958:peppol-development-governikus-01");
+      IParticipantIdentifier aReceiverID = Phase4PeppolSender.IF.createParticipantIdentifierWithDefaultScheme ("9915:phase4-test-sender");
       if (false)
         aReceiverID = Phase4PeppolSender.IF.createParticipantIdentifierWithDefaultScheme ("0088:5050689000018as4");
       final ESimpleUserMessageSendResult eResult;
@@ -81,15 +81,15 @@ public final class MainPhase4PeppolSender
                                   .payload (aPayloadElement)
                                   .smpClient (new SMPClientReadOnly (Phase4PeppolSender.URL_PROVIDER, aReceiverID, ESML.DIGIT_TEST))
                                   .rawResponseConsumer (new AS4RawResponseConsumerWriteToFile ())
-                                  .validationConfiguration (PeppolValidation3_13_0.VID_OPENPEPPOL_INVOICE_V3,
-                                                            new Phase4PeppolValidatonResultHandler ()
-                                                            {
-                                                              @Override
-                                                              public void onValidationSuccess (final ValidationResultList aValidationResult)
-                                                              {
-                                                                LOGGER.info ("Successfully validated XML payload");
-                                                              }
-                                                            })
+//                                  .validationConfiguration (PeppolValidation3_13_0.VID_OPENPEPPOL_INVOICE_V3,
+//                                                            new Phase4PeppolValidatonResultHandler ()
+//                                                            {
+//                                                              @Override
+//                                                              public void onValidationSuccess (final ValidationResultList aValidationResult)
+//                                                              {
+//                                                                LOGGER.info ("Successfully validated XML payload");
+//                                                              }
+//                                                            })
                                   .sendMessageAndCheckForReceipt ();
       LOGGER.info ("Peppol send result: " + eResult);
     }

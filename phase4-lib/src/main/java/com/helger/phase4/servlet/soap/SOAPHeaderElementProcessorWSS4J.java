@@ -36,6 +36,7 @@ import org.apache.wss4j.dom.engine.WSSecurityEngine;
 import org.apache.wss4j.dom.engine.WSSecurityEngineResult;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.dom.handler.WSHandlerResult;
+import org.apache.wss4j.dom.validate.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -113,7 +114,12 @@ public class SOAPHeaderElementProcessorWSS4J implements ISOAPHeaderElementProces
       final WSSConfig aWSSConfig = aWSSConfigSupplier.get ();
 
       // Configure RequestData needed for the check / decrypt process!
-      final RequestData aRequestData = new RequestData ();
+      final RequestData aRequestData = new RequestData () {
+        @Override
+        public Validator getValidator(QName qName) throws WSSecurityException {
+          return null;
+        }
+      };
       aRequestData.setCallbackHandler (aKeyStoreCallback);
       if (aAttachments.isNotEmpty ())
         aRequestData.setAttachmentCallbackHandler (aAttachmentCallbackHandler);

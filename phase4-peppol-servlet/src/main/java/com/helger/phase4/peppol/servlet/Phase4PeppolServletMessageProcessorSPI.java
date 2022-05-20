@@ -540,8 +540,8 @@ public class Phase4PeppolServletMessageProcessorSPI implements IAS4ServletMessag
     else
     {
       // Start consistency checks?
-      final Phase4PeppolReceiverCheckData aReceiverCheckData = m_aReceiverCheckData != null ? m_aReceiverCheckData
-                                                                                            : Phase4PeppolServletConfiguration.getAsReceiverCheckData ();
+      final Phase4PeppolReceiverCheckData aReceiverCheckData = null;//m_aReceiverCheckData != null ? m_aReceiverCheckData
+//                                                                                            : Phase4PeppolServletConfiguration.getAsReceiverCheckData ();
       if (aReceiverCheckData != null)
       {
         if (LOGGER.isDebugEnabled ())
