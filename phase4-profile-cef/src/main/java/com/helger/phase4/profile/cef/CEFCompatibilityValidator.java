@@ -60,8 +60,24 @@ import com.helger.phase4.wss.EWSSVersion;
  */
 public class CEFCompatibilityValidator implements IAS4ProfileValidator
 {
+  public static final boolean DEFAULT_EXPECT_FOUR_CORNER_MODEL = true;
+
+  private boolean m_bExpectFourCornerModel = DEFAULT_EXPECT_FOUR_CORNER_MODEL;
+
   public CEFCompatibilityValidator ()
   {}
+
+  public final boolean isExpectFourCornerModel ()
+  {
+    return m_bExpectFourCornerModel;
+  }
+
+  @Nonnull
+  public final CEFCompatibilityValidator setExpectFourCornerModel (final boolean b)
+  {
+    m_bExpectFourCornerModel = b;
+    return this;
+  }
 
   @Nonnull
   private static IError _createError (@Nonnull final String sMsg)
@@ -154,7 +170,7 @@ public class CEFCompatibilityValidator implements IAS4ProfileValidator
         if (!aPModeLegSecurity.getX509SignatureHashFunction ().equals (ECryptoAlgorithmSignDigest.DIGEST_SHA_256))
         {
           aErrorList.add (_createError (sFieldPrefix +
-                                        "Securoty.X509SignatureHashFunction must use the value '" +
+                                        "Security.X509SignatureHashFunction must use the value '" +
                                         ECryptoAlgorithmSignDigest.DIGEST_SHA_256.getID () +
                                         "'"));
         }
@@ -168,7 +184,7 @@ public class CEFCompatibilityValidator implements IAS4ProfileValidator
         if (!aPModeLegSecurity.getX509EncryptionAlgorithm ().equals (ECryptoAlgorithmCrypt.AES_128_GCM))
         {
           aErrorList.add (_createError (sFieldPrefix +
-                                        "Securoty.X509EncryptionAlgorithm must use the value '" +
+                                        "Security.X509EncryptionAlgorithm must use the value '" +
                                         ECryptoAlgorithmCrypt.AES_128_GCM.getID () +
                                         "' instead of '" +
                                         aPModeLegSecurity.getX509EncryptionAlgorithm ().getID () +
@@ -343,6 +359,7 @@ public class CEFCompatibilityValidator implements IAS4ProfileValidator
       if (StringHelper.hasNoText (aUserMsg.getMessageInfo ().getMessageId ()))
         aErrorList.add (_createError ("MessageInfo/MessageId is missing"));
 
+      if (m_bExpectFourCornerModel)
       {
         // Check if originalSender and finalRecipient are present
         // Since these two properties are mandatory
@@ -415,7 +432,7 @@ public class CEFCompatibilityValidator implements IAS4ProfileValidator
     else
     {
       if (StringHelper.hasNoText (aSignalMsg.getMessageInfo ().getMessageId ()))
-        aErrorList.add (_createError ("MessageID is missing but is mandatory!"));
+        aErrorList.add (_createError ("MessageInfo/MessageId is missing"));
     }
   }
 }

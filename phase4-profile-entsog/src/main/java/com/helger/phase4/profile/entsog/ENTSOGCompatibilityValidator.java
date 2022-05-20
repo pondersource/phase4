@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2015-2022 Pavel Rotek
+ * Copyright (C) 2015-2021 Pavel Rotek
  * pavel[dot]rotek[at]gmail[dot]com
  *
- * Copyright (C) 2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2021-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -145,7 +145,7 @@ public class ENTSOGCompatibilityValidator implements IAS4ProfileValidator
         if (!aPModeLegSecurity.getX509SignatureHashFunction ().equals (ECryptoAlgorithmSignDigest.DIGEST_SHA_256))
         {
           aErrorList.add (_createError (sFieldPrefix +
-                                        "Securoty.X509SignatureHashFunction must use the value '" +
+                                        "Security.X509SignatureHashFunction must use the value '" +
                                         ECryptoAlgorithmSignDigest.DIGEST_SHA_256.getID () +
                                         "'"));
         }
@@ -159,7 +159,7 @@ public class ENTSOGCompatibilityValidator implements IAS4ProfileValidator
         if (!aPModeLegSecurity.getX509EncryptionAlgorithm ().equals (ECryptoAlgorithmCrypt.AES_128_GCM))
         {
           aErrorList.add (_createError (sFieldPrefix +
-                                        "Securoty.X509EncryptionAlgorithm must use the value '" +
+                                        "Security.X509EncryptionAlgorithm must use the value '" +
                                         ECryptoAlgorithmCrypt.AES_128_GCM.getID () +
                                         "' instead of '" +
                                         aPModeLegSecurity.getX509EncryptionAlgorithm ().getID () +

@@ -314,6 +314,7 @@ public final class Phase4PeppolSender
       // Override default values
       try
       {
+        // Use the Peppol specific timeout settings
         httpClientFactory (new Phase4PeppolHttpClientSettings ());
         agreementRef (PeppolPMode.DEFAULT_AGREEMENT_ID);
         fromPartyIDType (PeppolPMode.DEFAULT_PARTY_TYPE_ID);
@@ -903,7 +904,8 @@ public final class Phase4PeppolSender
      *        <code>PeppolValidation390.VID_OPENPEPPOL_INVOICE_V3</code>. May be
      *        <code>null</code>.
      * @return this for chaining
-     * @see #validationConfiguration(VESID, IPhase4PeppolValidationResultHandler)
+     * @see #validationConfiguration(VESID,
+     *      IPhase4PeppolValidationResultHandler)
      */
     @Nonnull
     public Builder validationConfiguration (@Nullable final VESID aVESID)

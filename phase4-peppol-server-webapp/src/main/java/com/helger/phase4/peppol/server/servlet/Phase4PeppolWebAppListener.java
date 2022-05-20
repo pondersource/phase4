@@ -18,6 +18,7 @@ package com.helger.phase4.peppol.server.servlet;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -35,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import com.helger.commons.collection.CollectionHelper;
+import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.debug.GlobalDebug;
 import com.helger.commons.exception.InitializationException;
 import com.helger.commons.io.file.SimpleFileIO;
@@ -49,6 +52,7 @@ import com.helger.peppol.utils.PeppolCertificateChecker;
 import com.helger.phase4.CAS4;
 import com.helger.phase4.config.AS4Configuration;
 import com.helger.phase4.crypto.AS4CryptoFactoryProperties;
+import com.helger.phase4.crypto.AS4CryptoProperties;
 import com.helger.phase4.dump.AS4DumpManager;
 import com.helger.phase4.dump.AS4IncomingDumperFileBased;
 import com.helger.phase4.dump.AS4OutgoingDumperFileBased;
@@ -131,7 +135,8 @@ public final class Phase4PeppolWebAppListener extends WebAppListener
     HttpDebugger.setEnabled (false);
 
     // Sanity check
-    if (CommandMap.getDefaultCommandMap ().createDataContentHandler (CMimeType.MULTIPART_RELATED.getAsString ()) == null)
+    if (CommandMap.getDefaultCommandMap ()
+                  .createDataContentHandler (CMimeType.MULTIPART_RELATED.getAsString ()) == null)
       throw new IllegalStateException ("No DataContentHandler for MIME Type '" +
                                        CMimeType.MULTIPART_RELATED.getAsString () +
                                        "' is available. There seems to be a problem with the dependencies/packaging");
@@ -162,6 +167,7 @@ public final class Phase4PeppolWebAppListener extends WebAppListener
 
   private static void _initAS4 ()
   {
+    // Start duplicate check
     AS4ServerInitializer.initAS4Server ();
 
     // Store the incoming file as is
@@ -200,14 +206,58 @@ public final class Phase4PeppolWebAppListener extends WebAppListener
     final KeyStore aKS = AS4CryptoFactoryProperties.getDefaultInstance ().getKeyStore ();
     if (aKS == null)
       throw new InitializationException ("Failed to load configured Keystore");
-    LOGGER.info ("Successfully loaded configured key store from the crypto factory");
+    LOGGER.info ("  Successfully loaded configured key store from the crypto factory.");
+    LOGGER.info ("  Loaded key store type is '" + aKS.getType () + "'");
 
-    final PrivateKeyEntry aPKE = AS4CryptoFactoryProperties.getDefaultInstance ().getPrivateKeyEntry ();
+    // List all the aliases - debug only
+    try
+    {
+      final ICommonsList <String> aAliases = CollectionHelper.newList (aKS.aliases ());
+      LOGGER.info ("The keystore contains the following " + aAliases.size () + " alias(es): " + aAliases);
+      int nIndex = 1;
+      for (final String sAlias : aAliases)
+      {
+        String sType = "unknown";
+        try
+        {
+          final KeyStore.Entry aEntry = aKS.getEntry (sAlias,
+                                                      new KeyStore.PasswordProtection (aCP.getKeyPasswordCharArray ()));
+          if (aEntry instanceof KeyStore.PrivateKeyEntry)
+            sType = "private-key";
+          else
+            if (aEntry instanceof KeyStore.SecretKeyEntry)
+              sType = "secret-key";
+            else
+              if (aEntry instanceof KeyStore.TrustedCertificateEntry)
+                sType = "trusted-certificate";
+        }
+        catch (final Exception ex)
+        {}
+        LOGGER.info ("  " +
+                     nIndex +
+                     ".: alias(" +
+                     sAlias +
+                     ") type(" +
+                     sType +
+                     ") date(" +
+                     aKS.getCreationDate (sAlias) +
+                     ")");
+        ++nIndex;
+      }
+    }
+    catch (final GeneralSecurityException ex)
+    {
+      LOGGER.error ("Failed to list all aliases in the keystore", ex);
+    }
+
+    // Check if the key configuration is okay - fail early if something is
+    // misconfigured
+    LOGGER.info ("Trying to load configured private key (alias=" + aCP.getKeyAlias () + ")");
+    final PrivateKeyEntry aPKE = aCF.getPrivateKeyEntry ();
     if (aPKE == null)
       throw new InitializationException ("Failed to load configured private key");
-    LOGGER.info ("Successfully loaded configured private key from the crypto factory");
+    LOGGER.info ("  Successfully loaded configured private key from the crypto factory");
 
-    // No OCSP check for performance
     final X509Certificate aAPCert = (X509Certificate) aPKE.getCertificate ();
     final EPeppolCertificateCheckResult eCheckResult = EPeppolCertificateCheckResult.VALID;
     if (eCheckResult.isInvalid ())

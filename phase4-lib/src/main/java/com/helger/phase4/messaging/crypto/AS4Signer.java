@@ -53,6 +53,7 @@ import com.helger.phase4.wss.WSSSynchronizer;
 @Immutable
 public final class AS4Signer
 {
+  static final String ENCRYPTION_MODE_CONTENT = "Content";
   private static final Logger LOGGER = LoggerFactory.getLogger (AS4Signer.class);
 
   private AS4Signer ()
@@ -76,7 +77,16 @@ public final class AS4Signer
     ValueEnforcer.notNull (aSigningParams, "SigningParams");
 
     if (LOGGER.isInfoEnabled ())
-      LOGGER.info ("Now signing AS4 message");
+      LOGGER.info ("Now signing AS4 message. KeyIdentifierType=" +
+                   aSigningParams.getKeyIdentifierType ().name () +
+                   "; KeyAlias=" +
+                   aCryptoFactory.getKeyAlias () +
+                   "; SignAlgo=" +
+                   aSigningParams.getAlgorithmSign ().getAlgorithmURI () +
+                   "; DigestAlgo=" +
+                   aSigningParams.getAlgorithmSignDigest ().getAlgorithmURI () +
+                   "; C14NAlgo=" +
+                   aSigningParams.getAlgorithmC14N ().getAlgorithmURI ());
 
     // Start signing the document
     final WSSecHeader aSecHeader = new WSSecHeader (aPreSigningMessage);
@@ -92,19 +102,21 @@ public final class AS4Signer
     aBuilder.setSigCanonicalization (aSigningParams.getAlgorithmC14N ().getAlgorithmURI ());
 
     // Sign the Ebms3 Messaging element itself
-    aBuilder.getParts ().add (new WSEncryptionPart (sMessagingID, "Content"));
+    aBuilder.getParts ().add (new WSEncryptionPart (sMessagingID, ENCRYPTION_MODE_CONTENT));
 
     // Sign the SOAP body
-    aBuilder.getParts ().add (new WSEncryptionPart ("Body", eSoapVersion.getNamespaceURI (), "Content"));
+    aBuilder.getParts ().add (new WSEncryptionPart ("Body", eSoapVersion.getNamespaceURI (), ENCRYPTION_MODE_CONTENT));
 
     if (CollectionHelper.isNotEmpty (aAttachments))
     {
       // Modify builder for attachments
 
       // "cid:Attachments" is a predefined ID used inside WSSecSignatureBase
-      aBuilder.getParts ().add (new WSEncryptionPart (MessageHelperMethods.PREFIX_CID + "Attachments", "Content"));
+      aBuilder.getParts ()
+              .add (new WSEncryptionPart (MessageHelperMethods.PREFIX_CID + "Attachments", ENCRYPTION_MODE_CONTENT));
 
-      final WSS4JAttachmentCallbackHandler aAttachmentCallbackHandler = new WSS4JAttachmentCallbackHandler (aAttachments, aResHelper);
+      final WSS4JAttachmentCallbackHandler aAttachmentCallbackHandler = new WSS4JAttachmentCallbackHandler (aAttachments,
+                                                                                                            aResHelper);
       aBuilder.setAttachmentCallbackHandler (aAttachmentCallbackHandler);
     }
 

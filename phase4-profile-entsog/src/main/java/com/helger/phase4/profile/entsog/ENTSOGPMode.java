@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2015-2022 Pavel Rotek
+ * Copyright (C) 2015-2021 Pavel Rotek
  * pavel[dot]rotek[at]gmail[dot]com
  *
- * Copyright (C) 2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2021-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -134,9 +134,13 @@ public final class ENTSOGPMode
     final ETriState eReceptionAwareness = ETriState.TRUE;
     final ETriState eRetry = ETriState.TRUE;
     final int nMaxRetries = 1;
-    final int nRetryIntervalMS = 10_000;
+    final long nRetryIntervalMS = 10_000;
     final ETriState eDuplicateDetection = ETriState.TRUE;
-    return new PModeReceptionAwareness (eReceptionAwareness, eRetry, nMaxRetries, nRetryIntervalMS, eDuplicateDetection);
+    return new PModeReceptionAwareness (eReceptionAwareness,
+                                        eRetry,
+                                        nMaxRetries,
+                                        nRetryIntervalMS,
+                                        eDuplicateDetection);
   }
 
   /**
@@ -162,8 +166,16 @@ public final class ENTSOGPMode
                                          @Nonnull final IPModeIDProvider aPModeIDProvider,
                                          final boolean bPersist)
   {
-    final PModeParty aInitiator = new PModeParty (ENTSOG_PARTY_ID_TYPE, sInitiatorID, CAS4.DEFAULT_INITIATOR_URL, null, null);
-    final PModeParty aResponder = new PModeParty (ENTSOG_PARTY_ID_TYPE, sResponderID, CAS4.DEFAULT_RESPONDER_URL, null, null);
+    final PModeParty aInitiator = new PModeParty (ENTSOG_PARTY_ID_TYPE,
+                                                  sInitiatorID,
+                                                  CAS4.DEFAULT_INITIATOR_URL,
+                                                  null,
+                                                  null);
+    final PModeParty aResponder = new PModeParty (ENTSOG_PARTY_ID_TYPE,
+                                                  sResponderID,
+                                                  CAS4.DEFAULT_RESPONDER_URL,
+                                                  null,
+                                                  null);
 
     final PMode aPMode = new PMode (aPModeIDProvider.getPModeID (sInitiatorID, sResponderID),
                                     aInitiator,

@@ -68,7 +68,8 @@ public final class AS4Encryptor
   {}
 
   @Nonnull
-  private static WSSecEncrypt _createEncrypt (@Nonnull final WSSecHeader aSecHeader, @Nonnull final AS4CryptParams aCryptParams)
+  private static WSSecEncrypt _createEncrypt (@Nonnull final WSSecHeader aSecHeader,
+                                              @Nonnull final AS4CryptParams aCryptParams)
   {
     final WSSecEncrypt aBuilder = new WSSecEncrypt (aSecHeader);
     // As the receiver MAY not have pre-configured the signing leaf certificate,
@@ -103,13 +104,27 @@ public final class AS4Encryptor
                                                    @Nonnull final AS4CryptParams aCryptParams) throws WSSecurityException
   {
     if (LOGGER.isInfoEnabled ())
-      LOGGER.info ("Now encrypting AS4 SOAP message");
+      LOGGER.info ("Now encrypting AS4 SOAP message. KeyIdentifierType=" +
+                   aCryptParams.getKeyIdentifierType ().name () +
+                   "; EncAlgo=" +
+                   aCryptParams.getAlgorithmCrypt ().getAlgorithmURI () +
+                   "; KeyEncAlgo=" +
+                   aCryptParams.getKeyEncAlgorithm () +
+                   "; MgfAlgo=" +
+                   aCryptParams.getMGFAlgorithm () +
+                   "; DigestAlgo=" +
+                   aCryptParams.getDigestAlgorithm () +
+                   (aCryptParams.hasAlias () ? "; KeyAlias=" + aCryptParams.getAlias () : "") +
+                   (aCryptParams.hasCertificate () ? "; CertificateSubjectCN=" +
+                                                     aCryptParams.getCertificate ().getSubjectDN ().getName ()
+                                                   : ""));
 
     final WSSecHeader aSecHeader = new WSSecHeader (aDoc);
     aSecHeader.insertSecurityHeader ();
 
     final WSSecEncrypt aBuilder = _createEncrypt (aSecHeader, aCryptParams);
-    aBuilder.getParts ().add (new WSEncryptionPart ("Body", eSoapVersion.getNamespaceURI (), "Content"));
+    aBuilder.getParts ()
+            .add (new WSEncryptionPart ("Body", eSoapVersion.getNamespaceURI (), AS4Signer.ENCRYPTION_MODE_CONTENT));
 
     // Ensure mustUnderstand value
     final Attr aMustUnderstand = aSecHeader.getSecurityHeaderElement ()
@@ -156,7 +171,11 @@ public final class AS4Encryptor
     if (AS4Configuration.isWSS4JSynchronizedSecurity ())
     {
       // Synchronize
-      return WSSSynchronizer.call ( () -> _encryptSoapBodyPayload (aCryptoFactory, eSoapVersion, aDoc, bMustUnderstand, aCryptParams));
+      return WSSSynchronizer.call ( () -> _encryptSoapBodyPayload (aCryptoFactory,
+                                                                   eSoapVersion,
+                                                                   aDoc,
+                                                                   bMustUnderstand,
+                                                                   aCryptParams));
     }
 
     // Ensure WSSConfig is initialized
@@ -175,7 +194,20 @@ public final class AS4Encryptor
                                                      @Nonnull final AS4CryptParams aCryptParams) throws WSSecurityException
   {
     if (LOGGER.isInfoEnabled ())
-      LOGGER.info ("Now encrypting AS4 MIME message");
+      LOGGER.info ("Now encrypting AS4 MIME message. KeyIdentifierType=" +
+                   aCryptParams.getKeyIdentifierType ().name () +
+                   "; EncAlgo=" +
+                   aCryptParams.getAlgorithmCrypt ().getAlgorithmURI () +
+                   "; KeyEncAlgo=" +
+                   aCryptParams.getKeyEncAlgorithm () +
+                   "; MgfAlgo=" +
+                   aCryptParams.getMGFAlgorithm () +
+                   "; DigestAlgo=" +
+                   aCryptParams.getDigestAlgorithm () +
+                   (aCryptParams.hasAlias () ? "; KeyAlias=" + aCryptParams.getAlias () : "") +
+                   (aCryptParams.hasCertificate () ? "; CertificateSubjectCN=" +
+                                                     aCryptParams.getCertificate ().getSubjectDN ().getName ()
+                                                   : ""));
 
     final WSSecHeader aSecHeader = new WSSecHeader (aDoc);
     aSecHeader.insertSecurityHeader ();
@@ -183,7 +215,9 @@ public final class AS4Encryptor
     final WSSecEncrypt aBuilder = _createEncrypt (aSecHeader, aCryptParams);
 
     // "cid:Attachments" is a predefined ID
-    aBuilder.getParts ().add (new WSEncryptionPart (MessageHelperMethods.PREFIX_CID + "Attachments", "Content"));
+    aBuilder.getParts ()
+            .add (new WSEncryptionPart (MessageHelperMethods.PREFIX_CID + "Attachments",
+                                        AS4Signer.ENCRYPTION_MODE_CONTENT));
 
     WSS4JAttachmentCallbackHandler aAttachmentCallbackHandler = null;
     if (CollectionHelper.isNotEmpty (aAttachments))
@@ -260,6 +294,12 @@ public final class AS4Encryptor
     // Ensure WSSConfig is initialized
     WSSConfigManager.getInstance ();
 
-    return _encryptMimeMessage (eSoapVersion, aDoc, aAttachments, aCryptoFactory, bMustUnderstand, aResHelper, aCryptParams);
+    return _encryptMimeMessage (eSoapVersion,
+                                aDoc,
+                                aAttachments,
+                                aCryptoFactory,
+                                bMustUnderstand,
+                                aResHelper,
+                                aCryptParams);
   }
 }
