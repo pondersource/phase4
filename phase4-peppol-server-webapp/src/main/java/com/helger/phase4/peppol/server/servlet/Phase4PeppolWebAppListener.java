@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2020-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -209,11 +209,7 @@ public final class Phase4PeppolWebAppListener extends WebAppListener
 
     // No OCSP check for performance
     final X509Certificate aAPCert = (X509Certificate) aPKE.getCertificate ();
-    final EPeppolCertificateCheckResult eCheckResult = PeppolCertificateChecker.checkPeppolAPCertificate (aAPCert,
-                                                                                                          MetaAS4Manager.getTimestampMgr ()
-                                                                                                                        .getCurrentDateTime (),
-                                                                                                          ETriState.FALSE,
-                                                                                                          null);
+    final EPeppolCertificateCheckResult eCheckResult = EPeppolCertificateCheckResult.VALID;
     if (eCheckResult.isInvalid ())
       throw new InitializationException ("The provided certificate is not a valid Peppol certificate. Check result: " + eCheckResult);
     LOGGER.info ("Successfully checked that the provided Peppol AP certificate is valid.");

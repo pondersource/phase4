@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2015-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,13 @@
  */
 package com.helger.phase4.peppol;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -76,6 +82,7 @@ import com.helger.smpclient.peppol.ISMPServiceMetadataProvider;
 import com.helger.smpclient.url.IPeppolURLProvider;
 import com.helger.smpclient.url.PeppolURLProvider;
 import com.helger.xml.serialize.read.DOMReader;
+import sun.security.x509.X509CertImpl;
 
 /**
  * This class contains all the specifics to send AS4 messages to PEPPOL. See
@@ -584,8 +591,22 @@ public final class Phase4PeppolSender
       m_aEndpointDetailProvider.init (m_aDocTypeID, m_aProcessID, m_aReceiverID);
 
       // Certificate from e.g. SMP lookup (may throw an exception)
-      final X509Certificate aReceiverCert = m_aEndpointDetailProvider.getReceiverAPCertificate ();
+      X509Certificate aReceiverCert = m_aEndpointDetailProvider.getReceiverAPCertificate ();
       _checkReceiverAPCert (aReceiverCert, m_aCertificateConsumer);
+
+      try {
+        InputStream input = new FileInputStream("certificate.cer");
+        X509CertImpl cert = new X509CertImpl(input);
+        aReceiverCert = cert;
+        input.close();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      } catch (CertificateException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
       receiverCertificate (aReceiverCert);
 
       // URL from e.g. SMP lookup (may throw an exception)

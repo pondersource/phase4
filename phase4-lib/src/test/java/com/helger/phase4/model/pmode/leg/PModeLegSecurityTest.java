@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2015-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import com.helger.commons.mock.CommonsTestHelper;
 import com.helger.json.IJsonObject;
+import com.helger.xml.mock.XMLTestHelper;
 
 /**
  * Test class for class {@link PModeLegSecurity}.
@@ -35,6 +36,7 @@ public final class PModeLegSecurityTest
     final IJsonObject o = PModeLegSecurityJsonConverter.convertToJson (p);
     final PModeLegSecurity p2 = PModeLegSecurityJsonConverter.convertToNative (o);
     CommonsTestHelper.testDefaultImplementationWithEqualContentObject (p, p2);
+    XMLTestHelper.testMicroTypeConversion (p);
   }
 
   @Test

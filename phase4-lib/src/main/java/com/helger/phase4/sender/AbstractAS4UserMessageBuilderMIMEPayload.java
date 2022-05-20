@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2015-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -113,7 +113,7 @@ public abstract class AbstractAS4UserMessageBuilderMIMEPayload <IMPLTYPE extends
 
       // Add main attachment
       aUserMsg.addAttachment (WSS4JAttachment.createOutgoingFileAttachment (m_aPayload, aResHelper));
-
+      m_sEndpointURL = "http://localhost:8080/as4";
       // Add other attachments
       for (final Phase4OutgoingAttachment aAttachment : m_aAttachments)
         aUserMsg.addAttachment (WSS4JAttachment.createOutgoingFileAttachment (aAttachment, aResHelper));

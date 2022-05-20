@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2015-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -211,7 +211,7 @@ public final class AS4Configuration
   /**
    * @return <code>true</code> if all WSS4J actions should be explicitly
    *         synchronized. This is needed if multiple workers sending/receiving
-   *         AS4 messages from the same JBM. The configuration item is
+   *         AS4 messages from the same JVM. The configuration item is
    *         <code>phase4.wss4j.syncsecurity</code>.
    */
   public static boolean isWSS4JSynchronizedSecurity ()
@@ -274,7 +274,9 @@ public final class AS4Configuration
 
   /**
    * @return The endpoint address of "our" AP for comparison. Taken from the
-   *         configuration item <code>phase4.endpoint.address</code>.
+   *         configuration item <code>phase4.endpoint.address</code>. For Peppol
+   *         this is e.g. required to have the `https` protocol in production
+   *         mode.
    */
   @Nullable
   public static String getThisEndpointAddress ()

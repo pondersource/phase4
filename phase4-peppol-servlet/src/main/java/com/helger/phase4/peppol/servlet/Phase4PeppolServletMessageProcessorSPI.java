@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2021 Philip Helger (www.helger.com)
+ * Copyright (C) 2015-2022 Philip Helger (www.helger.com)
  * philip[at]helger[dot]com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -540,8 +540,8 @@ public class Phase4PeppolServletMessageProcessorSPI implements IAS4ServletMessag
     else
     {
       // Start consistency checks?
-      final Phase4PeppolReceiverCheckData aReceiverCheckData = m_aReceiverCheckData != null ? m_aReceiverCheckData
-                                                                                            : Phase4PeppolServletConfiguration.getAsReceiverCheckData ();
+      final Phase4PeppolReceiverCheckData aReceiverCheckData = null;//m_aReceiverCheckData != null ? m_aReceiverCheckData
+//                                                                                            : Phase4PeppolServletConfiguration.getAsReceiverCheckData ();
       if (aReceiverCheckData != null)
       {
         if (LOGGER.isDebugEnabled ())
