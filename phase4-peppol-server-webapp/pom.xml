@@ -133,4 +133,23 @@
     <plugins>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>test-server</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.helger.phase4</groupId>
+            <artifactId>phase4-peppol-server-webapp</artifactId>
+            <!--<version>1.2.1</version>-->
+            <configuration>
+              <executable>java</executable>
+              <classpathScope>test</classpathScope>
+              <mainClass>com.helger.phase4.peppol.server.standalone.RunInJettyPHASE4PEPPOL</mainClass>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
