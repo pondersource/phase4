@@ -37,9 +37,14 @@ Designate a folder as the working directory to run the sender/client. It can be 
 6. The sender/client will send a message to localhost on port 8080. The end point it will try to talk to is `http://localhost:8080/as4`.
 
 ### Configuration
-In progress...
+Create a file named "hacky_preferences.txt" in the working directory. Odd lines are key names and even lines are values.
+- `as4endpoint` is the end point url that the sender will send the request to. Default value is `http://localhost:8080`.
 
 ## Changes to the main repository
+``` Java
+com.helger.phase4.HackyPreferences
+```
+Added hacky preferences to manage manipulations from a config file named "hacky_preferences.txt" in the working directory.
 
 ### Sender
 ``` Java
@@ -50,9 +55,9 @@ com.helger.phase4.peppol.MainPhase4PeppolSender
 *Line 84:* validationConfiguration is commented out. It seemed suspicious! Never tried to run the code with it!
 
 ``` Java
-com.helger.phase4.sender.AbstractAS4UserMessageBuilderMIMEPayload.mainSendMessage:116
+com.helger.phase4.sender.AbstractAS4UserMessageBuilderMIMEPayload.mainSendMessage:117
 ```
-Receiver end point url is replaced with local host after the SMP lookup returns.
+Receiver end point url is replaced with the address read from the HackyPreferences.txt file. Key name is "as4endpoint".
 
 
 ``` Java

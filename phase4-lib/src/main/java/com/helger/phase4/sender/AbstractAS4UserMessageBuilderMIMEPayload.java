@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.concurrent.NotThreadSafe;
 
+import com.helger.phase4.HackyPreferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +114,7 @@ public abstract class AbstractAS4UserMessageBuilderMIMEPayload <IMPLTYPE extends
 
       // Add main attachment
       aUserMsg.addAttachment (WSS4JAttachment.createOutgoingFileAttachment (m_aPayload, aResHelper));
-      m_sEndpointURL = "http://localhost:8080/as4";
+      m_sEndpointURL = HackyPreferences.getAS4Endpoint() + "/as4";
       // Add other attachments
       for (final Phase4OutgoingAttachment aAttachment : m_aAttachments)
         aUserMsg.addAttachment (WSS4JAttachment.createOutgoingFileAttachment (aAttachment, aResHelper));
