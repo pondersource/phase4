@@ -24,7 +24,7 @@ public class HackyPreferences {
             }
 
             scanner.close();
-        } catch (FileNotFoundException e) { }
+        } catch (Throwable t) { }
     }
 
     public static String getAS4Endpoint() {
